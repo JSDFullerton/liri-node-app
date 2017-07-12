@@ -4,9 +4,15 @@
 	var request = require("request");
 	var Twitter = require("twitter");
 	var Spotify = require("node-spotify-api");
-	var spotifykey = new Spotify ({
-		id: "379fcdf6ea124adb880113eef7366b3b",
-		secret: "692e98301dca477a8cbeea3b6a7b5729"
+	// var spotifyInstance = new Spotify ({
+	// 	id: "379fcdf6ea124adb880113eef7366b3b",
+	// 	secret: "692e98301dca477a8cbeea3b6a7b5729"
+	// });
+
+
+	var spotify = new Spotify({
+  	id: "34e84d93de6a4650815e5420e0361fd3",
+  	secret: "5162cd8b5cf940f48702dffe096c2acb"
 	});
 
 
@@ -45,53 +51,60 @@
 
 
 // SPOTIFY COMMAND FUNCTION
-	function spotifyThisSong() {
+	function spotifyThisSong(options) {
 		
 		// Loop through Args
-		var songArgs = process.argv;
-		var songName = "";
+		var songNameArr = [];
 
-		for (var i = 3; i < songArgs.length; i++) {
-			if (i > 3 && i < songArgs.length) {
-				songName = songName + "+" + songArgs[i];
+		for (var i = 3; i < options.length; i++) {
+			
+			if (options[3] === undefined) {
+				songNameArr.push("Cruise");
 			}
+
 			else {
-				songName = songArgs[i];
+				songNameArr.push(options[i])
 			}
 		}// close loop
+				
+		var songName = songNameArr.join("+");
 
-
+		console.log(songName)
 		// SPOTIFY API REQUEST
 		spotify.search({type: "track", query: songName}), function(error, data) {
+			console.log("inside non error")
 			if (error) {
+				console.log("error")
 				return console.log("Spotify Error Occured: " + error);
+
 			}
 
 			console.log(data);
 
-		}// close spotify API request
-	}// close spotifyThisSong funct.
+		};// close spotify API request
+	};// close spotifyThisSong funct.
+
+
 
 
 // OMDB MOVIE COMMAND FUNCTION
-	function movieThis() {
-		var movieArgs = process.argv;
-		var movieName = "";
+	function movieThis(options) {
 
 		// Loop through Args
-		for (var i = 3; i < movieArgs.length; i++) {
+
+		var movieNameArr = [];
+		for (var i = 3; i < options.length; i++) {
 			
-			if (process.argv[3] === undefined){
+			if (options[3] === undefined){
 				movieName = "Mr. Nobody";
 			}
 
-			else if (i > 3 && i < movieArgs.length) {
-				movieName = movieName + "+" + movieArgs[i];
-			}
 			else {
-				movieName = movieArgs[i];
+				movieNameArr.push(options[i]);
 			}
 		}// close loop
+
+		var movieName = movieNameArr.join("+");
 
 		
 		// OMDB API REQUEST
@@ -122,9 +135,13 @@
 
 
 // SWITCH STATEMENTS - Bank Activity
+function userCommands() {
+	var command = process.argv[2]
+	var options = process.argv
 	switch (command) {
+
 		case "movie-this":
-		movieThis();
+		movieThis(options);
 		break;
 
 		case "my-tweets":
@@ -132,7 +149,7 @@
 		break;
 
 		case "spotify-this-song":
-		spotifyThisSong();
+		spotifyThisSong(options);
 		break;
 
 		case "do-what-it-says":
@@ -140,7 +157,10 @@
 		break;
 
 	}
+	
+}
 
+userCommands()
 
 
 

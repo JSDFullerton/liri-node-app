@@ -1,0 +1,17 @@
+{
+  "name": "liri-node-hw",
+  "version": "1.0.0",
+  "description": "hw9-liri-project",
+  "main": "keys.js",
+  "dependencies": {
+    "node-spotify-api": "^1.0.5",
+    "request": "^2.81.0",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JohnFullerton",
+  "license": "MIT"
+}

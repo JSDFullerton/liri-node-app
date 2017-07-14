@@ -77,7 +77,6 @@
 
 		// SPOTIFY API REQUEST
 		spotify.search({type: "track", query: songName, limit: 1}, function(error, data) {
-			console.log(data);
 
 			if (error) {
 				return console.log("Spotify Error Occured: " + error);
@@ -163,7 +162,7 @@
 			}// close if state
 
 			else {
-				var dataArr = data.split(', ');
+				var dataArr = data.split(",");
 				console.log("INDEX 0: " + dataArr[0]);
 				console.log("INDEX 1: " + dataArr[1]);
 				// var songName = dataArr[1].slice(1, -1);

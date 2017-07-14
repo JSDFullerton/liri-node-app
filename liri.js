@@ -4,16 +4,16 @@
 	var request = require("request");
 	var Twitter = require("twitter");
 	var Spotify = require("node-spotify-api");
-	// var spotifyInstance = new Spotify ({
-	// 	id: "379fcdf6ea124adb880113eef7366b3b",
-	// 	secret: "692e98301dca477a8cbeea3b6a7b5729"
-	// });
-
-
-	var spotify = new Spotify({
-  	id: "34e84d93de6a4650815e5420e0361fd3",
-  	secret: "5162cd8b5cf940f48702dffe096c2acb"
+	var spotify = new Spotify ({
+		id: "379fcdf6ea124adb880113eef7366b3b",
+		secret: "692e98301dca477a8cbeea3b6a7b5729"
 	});
+
+
+	// var spotify = new Spotify({
+ //  	id: "34e84d93de6a4650815e5420e0361fd3",
+ //  	secret: "5162cd8b5cf940f48702dffe096c2acb"
+	// });
 
 
 
@@ -51,60 +51,78 @@
 
 
 // SPOTIFY COMMAND FUNCTION
-	function spotifyThisSong(options) {
+	function spotifyThisSong() {
 		
 		// Loop through Args
+		var songName = "";
 		var songNameArr = [];
 
-		for (var i = 3; i < options.length; i++) {
-			
-			if (options[3] === undefined) {
-				songNameArr.push("Cruise");
+			if (process.argv[3] === undefined) {
+				songNameArr.push("I want it that way");
+
 			}
 
 			else {
-				songNameArr.push(options[i])
-			}
-		}// close loop
+				for (var i = 3; i < process.argv.length; i++) {
+					songNameArr.push(process.argv[i])
+					songName = songNameArr.join("+");
+
+			}// close loop
+		}// close else statement
+
+		console.log("SONG SELECTED: " + songName);
 				
-		var songName = songNameArr.join("+");
+		
 
 		console.log(songName)
 		// SPOTIFY API REQUEST
-		spotify.search({type: "track", query: songName}), function(error, data) {
-			console.log("inside non error")
+		spotify.search({type: "track", query: songName}, function(error, data) {
+			console.log(data);
+
 			if (error) {
 				console.log("error")
 				return console.log("Spotify Error Occured: " + error);
 
-			}
+			}// close if state
 
-			console.log(data);
+			else {
+				for (var i = 0; i < data.length; i++) {
 
-		};// close spotify API request
+					console.log(Object.key(data.items.tracks[i]));	
+				
+				}// close loop
+			}// close else state
+
+
+		});// close spotify API request
 	};// close spotifyThisSong funct.
 
 
 
 
 // OMDB MOVIE COMMAND FUNCTION
-	function movieThis(options) {
+	function movieThis() {
+
+		var movieName = "";
+		var movieNameArr = [];
+		console.log(process.argv[3])
+
 
 		// Loop through Args
-
-		var movieNameArr = [];
-		for (var i = 3; i < options.length; i++) {
-			
-			if (options[3] === undefined){
+		if (process.argv[3] == undefined){
 				movieName = "Mr. Nobody";
 			}
+			
+		else {
 
-			else {
-				movieNameArr.push(options[i]);
-			}
-		}// close loop
+			for (var i = 3; i < process.argv.length; i++) {
+				movieNameArr.push(process.argv[i]);
+				movieName = movieNameArr.join("+");
 
-		var movieName = movieNameArr.join("+");
+			}// close loop
+		}// close if statement
+
+
 
 		
 		// OMDB API REQUEST
@@ -130,18 +148,49 @@
 
 // DO WHAT IT SAYS COMMAND FUNCTION
 	function doWhatItSays() {
+		fs.readFile("random.txt", "utf8", function(error, data) {
+			if (error) {
+				console.log("DO WHAT IT SAYS ERROR: " + error);
+			
+			}// close if state
 
-	}
+			else {
+				var dataArr = data.split(', ');
+				var songName = dataArr[1].slice(1, -1);
+			
+			}// close else state
+
+			spotify.search({ type: "track", query: songName, limit: 1}, function(error, data) {
+				if (error) {
+					return console.log("Spotify Erro Occured: " + error);
+
+				}// close If state
+
+				else {
+					var songs = data.tracks.items;
+
+					songs.forEach(function(song) {
+						console.log(song.preview_url);
+						console.log(song.album.artists[0].name);
+						console.log(song.name);
+						console.log(song.album.name);
+						console.log("---------------------")
+						console.log("+++++++++++++++++++++")
+					
+					});// close forEach funct
+				}// close Else State
+			});// close Spotify API Call
+		});// close readFile Funct
+	}// close DoWhatItSays Funct
 
 
 // SWITCH STATEMENTS - Bank Activity
 function userCommands() {
-	var command = process.argv[2]
-	var options = process.argv
+
 	switch (command) {
 
 		case "movie-this":
-		movieThis(options);
+		movieThis();
 		break;
 
 		case "my-tweets":
@@ -149,7 +198,7 @@ function userCommands() {
 		break;
 
 		case "spotify-this-song":
-		spotifyThisSong(options);
+		spotifyThisSong();
 		break;
 
 		case "do-what-it-says":

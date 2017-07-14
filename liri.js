@@ -74,23 +74,29 @@
 				
 		
 
-		console.log(songName)
+
 		// SPOTIFY API REQUEST
-		spotify.search({type: "track", query: songName}, function(error, data) {
+		spotify.search({type: "track", query: songName, limit: 1}, function(error, data) {
 			console.log(data);
 
 			if (error) {
-				console.log("error")
 				return console.log("Spotify Error Occured: " + error);
 
 			}// close if state
 
 			else {
-				for (var i = 0; i < data.length; i++) {
+				var songs = data.tracks.items;
 
-					console.log(Object.key(data.items.tracks[i]));	
+					for (var i = 0; i < songs.length; i++) {
+
+						console.log("SONG NAME: " + songs[i].name);
+						console.log("ARTISTS: " + songs[i].album.artists[0].name);
+						console.log("ALBUM: " + songs[i].album.name);
+						console.log("PREVIEW URL: " + songs[i].preview_url);
+						console.log("---------------------")
+						console.log("+++++++++++++++++++++")
 				
-				}// close loop
+				};// close loop
 			}// close else state
 
 
@@ -141,6 +147,8 @@
 				console.log("Language: " + JSON.parse(body).Language);
 				console.log("Actors: " + JSON.parse(body).Actors);
 				console.log("Plot: " + JSON.parse(body).Plot);
+				console.log("---------------------")
+				console.log("+++++++++++++++++++++")
 			}
 		});// close queryUrl request
 	} // close movie function
@@ -156,13 +164,15 @@
 
 			else {
 				var dataArr = data.split(', ');
-				var songName = dataArr[1].slice(1, -1);
+				console.log("INDEX 0: " + dataArr[0]);
+				console.log("INDEX 1: " + dataArr[1]);
+				// var songName = dataArr[1].slice(1, -1);
 			
 			}// close else state
 
 			spotify.search({ type: "track", query: songName, limit: 1}, function(error, data) {
 				if (error) {
-					return console.log("Spotify Erro Occured: " + error);
+					return console.log("Spotify Error Occured: " + error);
 
 				}// close If state
 
@@ -170,10 +180,10 @@
 					var songs = data.tracks.items;
 
 					songs.forEach(function(song) {
-						console.log(song.preview_url);
-						console.log(song.album.artists[0].name);
-						console.log(song.name);
-						console.log(song.album.name);
+						console.log(songs.preview_url);
+						console.log(songs.album.artists[0].name);
+						console.log(songs.name);
+						console.log(songs.album.name);
 						console.log("---------------------")
 						console.log("+++++++++++++++++++++")
 					
